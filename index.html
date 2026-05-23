@@ -70,10 +70,10 @@
     <h1>🎴 对战选牌</h1>
 
     <div class="first-hand-select">
-        <label>🎲 先手选择：</label>
+        <label>🎲 先手：</label>
         <select id="firstHandSelect">
-            <option value="player">👤 玩家先手</option>
-            <option value="ai">🤖 AI先手</option>
+            <option value="player">玩家</option>
+            <option value="ai">AI</option>
         </select>
     </div>
 
@@ -94,28 +94,28 @@
 </div>
 
 <div id="sideMenu" class="side-menu">
-    <h3>📋 当前游戏记录</h3>
-    <div id="currentRecordList">暂无记录</div>
+    <h3>📋 当前记录</h3>
+    <div id="currentRecordList">暂无</div>
     <h3>📜 历史战绩</h3>
-    <div id="historyRecordList">暂无历史</div>
+    <div id="historyRecordList">暂无</div>
     <button class="close-menu" id="closeMenuBtn">关闭</button>
 </div>
 
 <div id="settingsModal" class="settings-modal">
     <div class="settings-content">
-        <h3>⚙️ 游戏设置</h3>
-        <div class="settings-row"><span>🎵 背景音乐</span><select id="musicToggleSelect"><option value="on">开启</option><option value="off">关闭</option></select></div>
+        <h3>⚙️ 设置</h3>
+        <div class="settings-row"><span>🎵 音乐</span><select id="musicToggleSelect"><option value="on">开</option><option value="off">关</option></select></div>
         <div class="settings-row"><span>🔊 音量</span><input type="range" id="volumeSlider" min="0" max="100" value="25"><span id="volumeValue">25%</span></div>
-        <div class="settings-row"><span>⏭️ 切换歌曲</span><button id="nextMusicBtn">下一首</button></div>
+        <div class="settings-row"><span>⏭️ 切歌</span><button id="nextMusicBtn">下一首</button></div>
         <div class="settings-row"><span>🎮 难度</span>
             <select id="difficultySelect">
-                <option value="low">🐣 低难度（AI会自爆）</option>
-                <option value="normal">⚖️ 正常难度（AI谨慎）</option>
-                <option value="high">🔥 高难度（AI抢大牌）</option>
-                <option value="extreme">💀 极高难度（AI抢节点+封小牌）</option>
+                <option value="low">低</option>
+                <option value="normal">正常</option>
+                <option value="high">高</option>
+                <option value="extreme">极高</option>
             </select>
         </div>
-        <button class="close-settings" id="closeSettingsBtn">保存并关闭</button>
+        <button class="close-settings" id="closeSettingsBtn">保存</button>
     </div>
 </div>
 
@@ -145,25 +145,28 @@
     function setMusicVolume(vol) { if (currentAudio) currentAudio.volume = vol / 100; }
     function nextMusic() { currentMusicIndex = (currentMusicIndex + 1) % musicList.length; playCurrentMusic(); }
 
-    // ==================== AI 难度策略（选牌模式）====================
+    // ==================== AI 难度策略 ====================
     let currentDifficulty = 'normal';
     
-    function getAIPlayCard(remainingCards, currentTotal, playerTotal, history) {
+    // 极高难度节点：12、24、30
+    const TARGET_NODES = [12, 24, 30];
+    
+    function getAIPlayCard(remainingCards, currentTotal) {
         if (!remainingCards.length) return null;
         
-        // 🐣 低难度：AI随机出牌（经常自爆）
+        // 低难度：随机
         if (currentDifficulty === 'low') {
             return remainingCards[Math.floor(Math.random() * remainingCards.length)];
         }
         
-        // ⚖️ 正常难度：只考虑自己不爆，选最大的安全牌
+        // 正常难度：只保自己不爆，选最大安全牌
         if (currentDifficulty === 'normal') {
             let safe = remainingCards.filter(n => currentTotal + n <= 39);
             if (safe.length) return Math.max(...safe);
             return Math.min(...remainingCards);
         }
         
-        // 🔥 高难度：优先抢大牌（5-8），逼玩家爆
+        // 高难度：优先抢大牌（5-8）施压
         if (currentDifficulty === 'high') {
             let big = remainingCards.filter(n => n >= 5 && currentTotal + n <= 39);
             if (big.length) return Math.max(...big);
@@ -172,22 +175,16 @@
             return Math.min(...remainingCards);
         }
         
-        // 💀 极高难度：抢节点（12/24/36）+ 抢小牌封玩家
+        // 极高难度：抢节点（12、24、30）
         if (currentDifficulty === 'extreme') {
-            // 关键节点：12, 24, 36
-            const targets = [12, 24, 36];
-            for (let target of targets) {
+            // 1. 优先抢节点
+            for (let target of TARGET_NODES) {
                 let need = target - currentTotal;
                 if (need >= 1 && need <= 8 && remainingCards.includes(need)) {
-                    return need; // 直接抢节点
+                    return need;
                 }
             }
-            // 如果玩家分数 > 30，抢小牌（1,2,3）封玩家
-            if (currentTotal > 30) {
-                let small = remainingCards.filter(n => n <= 3);
-                if (small.length) return Math.min(...small);
-            }
-            // 否则抢最大的安全牌施压
+            // 2. 没节点可抢时，选最大安全牌施压
             let safe = remainingCards.filter(n => currentTotal + n <= 39);
             if (safe.length) return Math.max(...safe);
             return Math.min(...remainingCards);
@@ -200,11 +197,11 @@
     let historyRecords = [];
     
     function loadHistory() {
-        const saved = localStorage.getItem('cardGameHistory_v2');
+        const saved = localStorage.getItem('cardGameHistory_v3');
         if (saved) { try { historyRecords = JSON.parse(saved); } catch(e) {} }
         updateHistoryDisplay();
     }
-    function saveHistory() { localStorage.setItem('cardGameHistory_v2', JSON.stringify(historyRecords)); updateHistoryDisplay(); }
+    function saveHistory() { localStorage.setItem('cardGameHistory_v3', JSON.stringify(historyRecords)); updateHistoryDisplay(); }
     function saveCurrentGameToHistory(result, finalScoreVal) {
         if (currentGameMoves.length === 0) return;
         historyRecords.unshift({ date: new Date().toLocaleString(), result, finalScore: finalScoreVal, moves: [...currentGameMoves] });
@@ -214,16 +211,16 @@
     function updateHistoryDisplay() {
         const historyDiv = document.getElementById('historyRecordList');
         if (!historyDiv) return;
-        if (historyRecords.length === 0) { historyDiv.innerHTML = '暂无历史'; return; }
-        historyDiv.innerHTML = historyRecords.map(rec => `<div class="record-item"><strong>${rec.result}</strong> | 总分:${rec.finalScore} | ${rec.date}<br>牌序: ${rec.moves.map(m => `${m.by}${m.number}`).join('→')}</div>`).join('');
+        if (historyRecords.length === 0) { historyDiv.innerHTML = '暂无'; return; }
+        historyDiv.innerHTML = historyRecords.map(rec => `<div class="record-item"><strong>${rec.result}</strong> | ${rec.finalScore}分 | ${rec.date}<br>${rec.moves.map(m => `${m.by}${m.number}`).join('→')}</div>`).join('');
     }
     function updateCurrentRecordDisplay() {
         const recordDiv = document.getElementById('currentRecordList');
         if (!recordDiv) return;
-        if (currentGameMoves.length === 0) { recordDiv.innerHTML = '暂无记录'; return; }
-        recordDiv.innerHTML = currentGameMoves.map(m => `<div class="record-item">${m.by} 出了 ${m.number}</div>`).join('');
+        if (currentGameMoves.length === 0) { recordDiv.innerHTML = '暂无'; return; }
+        recordDiv.innerHTML = currentGameMoves.map(m => `<div class="record-item">${m.by}出${m.number}</div>`).join('');
     }
-    function addMove(number, by) { currentGameMoves.push({ number, by, time: new Date().toLocaleTimeString() }); updateCurrentRecordDisplay(); }
+    function addMove(number, by) { currentGameMoves.push({ number, by }); updateCurrentRecordDisplay(); }
     function clearCurrentMoves() { currentGameMoves = []; updateCurrentRecordDisplay(); }
 
     // ==================== 游戏逻辑 ====================
@@ -280,14 +277,14 @@
     }
     function playCard(number, isPlayer) {
         if (!gameActive || !gameStarted) return false;
-        if (isPlayer && !isPlayerTurn) { msgDiv.innerHTML = "现在是AI回合，请等待~"; return false; }
+        if (isPlayer && !isPlayerTurn) { msgDiv.innerHTML = "等待AI..."; return false; }
         if (!isPlayer && isPlayerTurn) return false;
-        if (remaining[number] <= 0) { if (isPlayer) msgDiv.innerHTML = `数字${number}已经没有牌了！`; return false; }
+        if (remaining[number] <= 0) { if (isPlayer) msgDiv.innerHTML = `数字${number}没牌了！`; return false; }
         
         remaining[number]--;
         const newTotal = currentTotal + number;
         const who = isPlayer ? "玩家" : "AI";
-        lastDrawInfo.innerHTML = `📌 ${who} 出了 ${number} (剩余${remaining[number]}张)`;
+        lastDrawInfo.innerHTML = `📌 ${who}出${number} (剩${remaining[number]}张)`;
         addMove(number, who);
         
         if (newTotal > 39) { currentTotal = newTotal; updateUI(); if (isPlayer) endGame("ai", "player", number); else endGame("player", "ai", number); return true; }
@@ -297,8 +294,8 @@
         isPlayerTurn = !isPlayerTurn;
         
         if (gameActive) {
-            if (isPlayerTurn) { turnIndicator.innerHTML = "👤 玩家回合"; msgDiv.innerHTML = `✅ ${who}出了${number}，总分${currentTotal}`; }
-            else { turnIndicator.innerHTML = "🤖 AI 回合"; msgDiv.innerHTML = `✅ ${who}出了${number}，总分${currentTotal}`;
+            if (isPlayerTurn) { turnIndicator.innerHTML = "👤 玩家回合"; msgDiv.innerHTML = `✅ ${who}出${number}，总分${currentTotal}`; }
+            else { turnIndicator.innerHTML = "🤖 AI回合"; msgDiv.innerHTML = `✅ ${who}出${number}，总分${currentTotal}`;
                 if (aiTimer) clearTimeout(aiTimer);
                 aiTimer = setTimeout(() => { if (gameActive && !isPlayerTurn && gameStarted) aiPlayCard(); }, 400);
             }
@@ -310,14 +307,14 @@
         if (!gameActive || isPlayerTurn || !gameStarted) return;
         const remainingCards = [];
         for (let i = 1; i <= 8; i++) if (remaining[i] > 0) remainingCards.push(i);
-        if (remainingCards.length === 0) { msgDiv.innerHTML = "牌堆已空！平局！"; gameActive = false; turnIndicator.innerHTML = "🤝 平局"; updateUI(); return; }
-        const bestChoice = getAIPlayCard(remainingCards, currentTotal, 0, []);
+        if (remainingCards.length === 0) { msgDiv.innerHTML = "平局！"; gameActive = false; turnIndicator.innerHTML = "🤝 平局"; updateUI(); return; }
+        const bestChoice = getAIPlayCard(remainingCards, currentTotal);
         if (bestChoice !== null) playCard(bestChoice, false);
     }
     function playerPlayCard(number) {
         if (!gameActive || !gameStarted) return;
-        if (!isPlayerTurn) { msgDiv.innerHTML = "现在是AI回合，请等待~"; return; }
-        if (remaining[number] <= 0) { msgDiv.innerHTML = `数字${number}已经没牌了！`; return; }
+        if (!isPlayerTurn) { msgDiv.innerHTML = "等待AI..."; return; }
+        if (remaining[number] <= 0) { msgDiv.innerHTML = `数字${number}没牌了！`; return; }
         playCard(number, true);
     }
     function initGame() {
@@ -329,19 +326,17 @@
         clearCurrentMoves();
         updateUI();
         
-        // 根据先手选择设置回合
         const firstHand = firstHandSelect.value;
         isPlayerTurn = (firstHand === 'player');
         
         if (isPlayerTurn) {
             turnIndicator.innerHTML = "👤 玩家回合";
-            msgDiv.innerHTML = "游戏开始！玩家先出牌";
-            lastDrawInfo.innerHTML = "✨ 玩家先出牌 ✨";
+            msgDiv.innerHTML = "玩家先出牌";
+            lastDrawInfo.innerHTML = "✨ 玩家先手 ✨";
         } else {
-            turnIndicator.innerHTML = "🤖 AI 回合";
-            msgDiv.innerHTML = "游戏开始！AI先出牌";
-            lastDrawInfo.innerHTML = "✨ AI先出牌 ✨";
-            // AI 先手，自动出牌
+            turnIndicator.innerHTML = "🤖 AI回合";
+            msgDiv.innerHTML = "AI先出牌";
+            lastDrawInfo.innerHTML = "✨ AI先手 ✨";
             if (aiTimer) clearTimeout(aiTimer);
             aiTimer = setTimeout(() => { if (gameActive && !isPlayerTurn && gameStarted) aiPlayCard(); }, 500);
         }
@@ -353,7 +348,7 @@
             const btn = document.createElement('div');
             btn.className = 'card-btn';
             btn.id = `card_${i}`;
-            btn.innerHTML = `<span style="font-size:1.4rem;">${i}</span><span class="card-count">剩${remaining[i]}张</span>`;
+            btn.innerHTML = `<span>${i}</span><span class="card-count">剩${remaining[i]}张</span>`;
             btn.onclick = (function(num) { return function() { playerPlayCard(num); }; })(i);
             cardButtonsDiv.appendChild(btn);
         }
@@ -385,9 +380,8 @@
     loadHistory();
     initGame();
     
-    const GITHUB_USERNAME = "cookicGJH";
-    const CURRENT_VERSION = "2.0.0";
-    document.getElementById('versionInfo').innerHTML = `当前版本 v${CURRENT_VERSION}`;
+    const CURRENT_VERSION = "2.1.0";
+    document.getElementById('versionInfo').innerHTML = `v${CURRENT_VERSION}`;
 </script>
 </body>
     </html>
