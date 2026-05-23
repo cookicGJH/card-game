@@ -5,12 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>对战选牌 - 超39输</title>
     <style>
-        * {
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { user-select: none; -webkit-tap-highlight-color: transparent; }
         body {
-            font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(145deg, #1a472a 0%, #0e2a1a 100%);
             min-height: 100vh;
             display: flex;
@@ -29,192 +26,38 @@
             text-align: center;
             position: relative;
         }
-        h1 {
-            font-size: 1.5rem;
-            margin: 0 0 5px;
-            color: #ffd966;
-            background: #2c1a0e;
-            display: inline-block;
-            padding: 5px 20px;
-            border-radius: 40px;
-        }
-        .menu-btn {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: rgba(0,0,0,0.5);
-            border: none;
-            font-size: 1.5rem;
-            padding: 8px 12px;
-            border-radius: 30px;
-            color: white;
-            cursor: pointer;
-            backdrop-filter: blur(5px);
-        }
-        .settings-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(0,0,0,0.5);
-            border: none;
-            font-size: 1.3rem;
-            padding: 8px 12px;
-            border-radius: 30px;
-            color: white;
-            cursor: pointer;
-            backdrop-filter: blur(5px);
-        }
-        .side-menu {
-            position: fixed;
-            top: 0;
-            left: -85%;
-            width: 80%;
-            max-width: 320px;
-            height: 100%;
-            background: #2d2b26;
-            z-index: 1001;
-            transition: left 0.3s ease;
-            padding: 20px;
-            color: #ffecb3;
-            overflow-y: auto;
-        }
+        h1 { font-size: 1.5rem; margin: 0 0 5px; color: #ffd966; background: #2c1a0e; display: inline-block; padding: 5px 20px; border-radius: 40px; }
+        .menu-btn { position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.5); border: none; font-size: 1.5rem; padding: 8px 12px; border-radius: 30px; color: white; cursor: pointer; }
+        .settings-btn { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.5); border: none; font-size: 1.3rem; padding: 8px 12px; border-radius: 30px; color: white; cursor: pointer; }
+        .side-menu { position: fixed; top: 0; left: -85%; width: 80%; max-width: 320px; height: 100%; background: #2d2b26; z-index: 1001; transition: left 0.3s ease; padding: 20px; color: #ffecb3; overflow-y: auto; }
         .side-menu.open { left: 0; }
         .side-menu h3 { color: #ffd966; }
-        .record-item {
-            background: #3d3a30;
-            padding: 8px;
-            margin: 8px 0;
-            border-radius: 12px;
-            font-size: 0.75rem;
-        }
-        .close-menu {
-            background: #8b691b;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 30px;
-            color: white;
-            width: 100%;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-        .settings-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 1002;
-        }
-        .settings-content {
-            background: #2d2b26;
-            border-radius: 30px;
-            padding: 20px;
-            max-width: 320px;
-            width: 85%;
-            color: #ffecb3;
-        }
-        .settings-content h3 { text-align: center; color: #ffd966; }
-        .settings-row {
-            margin: 15px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .settings-row select, .settings-row input {
-            background: #1f2c17;
-            color: #ffecb3;
-            border: 1px solid #ffd966;
-            border-radius: 20px;
-            padding: 6px 12px;
-        }
-        .close-settings {
-            background: #517a47;
-            border: none;
-            padding: 10px;
-            border-radius: 40px;
-            color: white;
-            width: 100%;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-        .turn-indicator {
-            background: #2d2b26;
-            border-radius: 40px;
-            padding: 8px;
-            margin: 50px 0 12px 0;
-            font-weight: bold;
-        }
-        .stats {
-            background: #2d2b26;
-            border-radius: 30px;
-            padding: 12px;
-            margin-bottom: 15px;
-        }
-        .total {
-            font-size: 2.2rem;
-            font-weight: 800;
-            background: #f9f3e0;
-            display: inline-block;
-            padding: 5px 20px;
-            border-radius: 50px;
-            color: #c0392b;
-        }
+        .record-item { background: #3d3a30; padding: 8px; margin: 8px 0; border-radius: 12px; font-size: 0.75rem; }
+        .close-menu { background: #8b691b; border: none; padding: 8px 16px; border-radius: 30px; color: white; width: 100%; margin-top: 15px; cursor: pointer; }
+        .settings-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1002; }
+        .settings-content { background: #2d2b26; border-radius: 30px; padding: 20px; max-width: 320px; width: 85%; color: #ffecb3; }
+        .settings-content h3 { text-align: center; color: #ffd966; margin-top: 0; }
+        .settings-row { margin: 15px 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .settings-row select, .settings-row input { background: #1f2c17; color: #ffecb3; border: 1px solid #ffd966; border-radius: 20px; padding: 6px 12px; }
+        .settings-row button { background: #8b691b; color: white; border: none; border-radius: 20px; padding: 6px 16px; cursor: pointer; }
+        .close-settings { background: #517a47; border: none; padding: 10px; border-radius: 40px; color: white; width: 100%; margin-top: 15px; cursor: pointer; }
+        .turn-indicator { background: #2d2b26; border-radius: 40px; padding: 8px; margin: 50px 0 12px; font-weight: bold; }
+        .stats { background: #2d2b26; border-radius: 30px; padding: 12px; margin-bottom: 15px; }
+        .total { font-size: 2.2rem; font-weight: 800; background: #f9f3e0; display: inline-block; padding: 5px 20px; border-radius: 50px; color: #c0392b; }
         .remain { color: #f3d382; margin-top: 5px; font-size: 0.85rem; }
-        .cards-pool {
-            background: #ecd9b4;
-            border-radius: 30px;
-            padding: 12px;
-            margin: 15px 0;
-        }
+        .cards-pool { background: #ecd9b4; border-radius: 30px; padding: 12px; margin: 15px 0; }
         .pool-title { font-weight: bold; margin-bottom: 10px; color: #5a3a1a; }
         .card-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-        .card-btn {
-            background: #f5e6c8;
-            border: 2px solid #b97f3a;
-            width: 60px;
-            padding: 8px 0;
-            border-radius: 20px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            text-align: center;
-            cursor: pointer;
-            box-shadow: 0 3px 0 #a1582c;
-        }
+        .card-btn { background: #f5e6c8; border: 2px solid #b97f3a; width: 60px; padding: 8px 0; border-radius: 20px; font-size: 1.3rem; font-weight: bold; cursor: pointer; box-shadow: 0 3px 0 #a1582c; }
         .card-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #a1582c; }
         .card-btn.disabled { opacity: 0.4; pointer-events: none; }
         .card-count { font-size: 0.7rem; color: #8b5a2b; display: block; }
-        .last-draw {
-            font-size: 0.85rem;
-            background: #f7e5c2;
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 30px;
-            margin-bottom: 10px;
-        }
-        .message {
-            background: #1f2c17;
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 30px;
-            color: #ffecb3;
-            font-size: 0.8rem;
-        }
-        .reset-btn {
-            background: #517a47;
-            border: none;
-            font-size: 1rem;
-            padding: 8px 20px;
-            border-radius: 40px;
-            color: white;
-            cursor: pointer;
-            margin-top: 10px;
-        }
+        .last-draw { font-size: 0.85rem; background: #f7e5c2; display: inline-block; padding: 5px 15px; border-radius: 30px; margin-bottom: 10px; }
+        .message { background: #1f2c17; margin-top: 15px; padding: 10px; border-radius: 30px; color: #ffecb3; font-size: 0.8rem; }
+        .reset-btn { background: #517a47; border: none; font-size: 1rem; padding: 8px 20px; border-radius: 40px; color: white; cursor: pointer; margin-top: 10px; }
+        .first-hand-select { margin: 10px 0; display: flex; justify-content: center; gap: 20px; align-items: center; }
+        .first-hand-select label { font-weight: bold; color: #5a3a1a; }
+        .first-hand-select select { background: #f5e6c8; border: 2px solid #b97f3a; border-radius: 30px; padding: 6px 12px; font-weight: bold; }
         footer { font-size: 0.6rem; margin-top: 12px; opacity: 0.7; }
         .version-info { font-size: 0.6rem; margin-top: 8px; color: #8b7355; }
         @media (max-width: 480px) { .card-btn { width: 50px; font-size: 1.1rem; } }
@@ -225,6 +68,15 @@
     <button class="menu-btn" id="menuBtn">☰</button>
     <button class="settings-btn" id="settingsBtn">⚙️</button>
     <h1>🎴 对战选牌</h1>
+
+    <div class="first-hand-select">
+        <label>🎲 先手选择：</label>
+        <select id="firstHandSelect">
+            <option value="player">👤 玩家先手</option>
+            <option value="ai">🤖 AI先手</option>
+        </select>
+    </div>
+
     <div class="turn-indicator" id="turnIndicator">👤 玩家回合</div>
     <div class="stats">
         <div class="total">🎯 总分: <span id="totalValue">0</span></div>
@@ -234,11 +86,11 @@
         <div class="pool-title">🎴 剩余牌数量</div>
         <div class="card-buttons" id="cardButtons"></div>
     </div>
-    <div class="last-draw" id="lastDrawInfo">✨ 玩家先出牌 ✨</div>
+    <div class="last-draw" id="lastDrawInfo">✨ 游戏开始 ✨</div>
     <button id="resetBtn" class="reset-btn">🔄 重新开局</button>
-    <div class="message" id="msgArea">玩家先选牌，然后AI出牌。谁让总分超过39谁输。</div>
+    <div class="message" id="msgArea">选择先手后开始游戏</div>
     <div class="version-info" id="versionInfo">版本加载中...</div>
-    <footer>牌池:1~8各4张 | 玩家先手 | 超过39即败</footer>
+    <footer>牌池:1~8各4张 | 超过39即败</footer>
 </div>
 
 <div id="sideMenu" class="side-menu">
@@ -254,12 +106,13 @@
         <h3>⚙️ 游戏设置</h3>
         <div class="settings-row"><span>🎵 背景音乐</span><select id="musicToggleSelect"><option value="on">开启</option><option value="off">关闭</option></select></div>
         <div class="settings-row"><span>🔊 音量</span><input type="range" id="volumeSlider" min="0" max="100" value="25"><span id="volumeValue">25%</span></div>
+        <div class="settings-row"><span>⏭️ 切换歌曲</span><button id="nextMusicBtn">下一首</button></div>
         <div class="settings-row"><span>🎮 难度</span>
             <select id="difficultySelect">
-                <option value="low">🐣 低（AI乱出牌）</option>
-                <option value="normal">⚖️ 正常（均衡）</option>
-                <option value="high">🔥 高（AI会计算）</option>
-                <option value="extreme">💀 极高（AI接近完美）</option>
+                <option value="low">🐣 低难度（AI会自爆）</option>
+                <option value="normal">⚖️ 正常难度（AI谨慎）</option>
+                <option value="high">🔥 高难度（AI抢大牌）</option>
+                <option value="extreme">💀 极高难度（AI抢节点+封小牌）</option>
             </select>
         </div>
         <button class="close-settings" id="closeSettingsBtn">保存并关闭</button>
@@ -273,14 +126,15 @@
         'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
         'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
     ];
+    let currentMusicIndex = 0;
     let currentAudio = null;
     let musicEnabled = true;
     let musicStarted = false;
 
     function playCurrentMusic() {
-        if (!musicEnabled || musicStarted) return;
+        if (!musicEnabled) return;
         if (currentAudio) { currentAudio.pause(); currentAudio = null; }
-        currentAudio = new Audio(musicList[0]);
+        currentAudio = new Audio(musicList[currentMusicIndex]);
         currentAudio.loop = true;
         const vol = document.getElementById('volumeSlider').value / 100;
         currentAudio.volume = vol;
@@ -289,64 +143,55 @@
     }
     function stopMusic() { if (currentAudio) { currentAudio.pause(); currentAudio = null; } musicStarted = false; }
     function setMusicVolume(vol) { if (currentAudio) currentAudio.volume = vol / 100; }
+    function nextMusic() { currentMusicIndex = (currentMusicIndex + 1) % musicList.length; playCurrentMusic(); }
 
-    // ==================== 难度设置（修复版）====================
+    // ==================== AI 难度策略（选牌模式）====================
     let currentDifficulty = 'normal';
     
-    // 核心 AI 决策函数 - 根据难度返回要出的牌
-    function getAIPlayCard(remainingCards, currentTotalVal) {
+    function getAIPlayCard(remainingCards, currentTotal, playerTotal, history) {
         if (!remainingCards.length) return null;
         
-        // 🐣 低难度：AI完全随机出牌（乱按都能赢）
+        // 🐣 低难度：AI随机出牌（经常自爆）
         if (currentDifficulty === 'low') {
-            const randomIndex = Math.floor(Math.random() * remainingCards.length);
-            return remainingCards[randomIndex];
+            return remainingCards[Math.floor(Math.random() * remainingCards.length)];
         }
         
-        // ⚖️ 正常难度：原策略（会避免爆牌，但不算太聪明）
+        // ⚖️ 正常难度：只考虑自己不爆，选最大的安全牌
         if (currentDifficulty === 'normal') {
-            let safeChoices = remainingCards.filter(n => currentTotalVal + n <= 39);
-            if (safeChoices.length > 0) {
-                if (currentTotalVal >= 32) return Math.min(...safeChoices);
-                else if (currentTotalVal >= 25) {
-                    let small = safeChoices.filter(n => n <= 4);
-                    return small.length > 0 ? Math.min(...small) : Math.min(...safeChoices);
-                } else {
-                    let big = safeChoices.filter(n => n >= 5);
-                    return big.length > 0 ? Math.max(...big) : Math.max(...safeChoices);
+            let safe = remainingCards.filter(n => currentTotal + n <= 39);
+            if (safe.length) return Math.max(...safe);
+            return Math.min(...remainingCards);
+        }
+        
+        // 🔥 高难度：优先抢大牌（5-8），逼玩家爆
+        if (currentDifficulty === 'high') {
+            let big = remainingCards.filter(n => n >= 5 && currentTotal + n <= 39);
+            if (big.length) return Math.max(...big);
+            let safe = remainingCards.filter(n => currentTotal + n <= 39);
+            if (safe.length) return Math.max(...safe);
+            return Math.min(...remainingCards);
+        }
+        
+        // 💀 极高难度：抢节点（12/24/36）+ 抢小牌封玩家
+        if (currentDifficulty === 'extreme') {
+            // 关键节点：12, 24, 36
+            const targets = [12, 24, 36];
+            for (let target of targets) {
+                let need = target - currentTotal;
+                if (need >= 1 && need <= 8 && remainingCards.includes(need)) {
+                    return need; // 直接抢节点
                 }
             }
-            return Math.min(...remainingCards);
-        }
-        
-        // 🔥 高难度：AI会优先选大牌逼玩家，更激进
-        if (currentDifficulty === 'high') {
-            let safeChoices = remainingCards.filter(n => currentTotalVal + n <= 39);
-            if (safeChoices.length > 0) {
-                // 选最大的安全牌，给玩家施加压力
-                return Math.max(...safeChoices);
+            // 如果玩家分数 > 30，抢小牌（1,2,3）封玩家
+            if (currentTotal > 30) {
+                let small = remainingCards.filter(n => n <= 3);
+                if (small.length) return Math.min(...small);
             }
-            // 没安全牌就选最小的
+            // 否则抢最大的安全牌施压
+            let safe = remainingCards.filter(n => currentTotal + n <= 39);
+            if (safe.length) return Math.max(...safe);
             return Math.min(...remainingCards);
         }
-        
-        // 💀 极高难度：AI会计算最优策略，几乎必胜
-        if (currentDifficulty === 'extreme') {
-            let safeChoices = remainingCards.filter(n => currentTotalVal + n <= 39);
-            if (safeChoices.length > 0) {
-                // 优先选 6-8 的大牌
-                let bigSafe = safeChoices.filter(n => n >= 6);
-                if (bigSafe.length > 0) return Math.max(...bigSafe);
-                // 没有大牌就选最接近 39 的
-                let closest = safeChoices.reduce((a, b) => {
-                    return (currentTotalVal + a > currentTotalVal + b) ? a : b;
-                });
-                return closest;
-            }
-            // 必爆时选最小的，尽量多撑一轮
-            return Math.min(...remainingCards);
-        }
-        
         return remainingCards[0];
     }
 
@@ -355,14 +200,14 @@
     let historyRecords = [];
     
     function loadHistory() {
-        const saved = localStorage.getItem('cardGameHistory');
-        if (saved) { try { historyRecords = JSON.parse(saved); } catch(e) { historyRecords = []; } }
+        const saved = localStorage.getItem('cardGameHistory_v2');
+        if (saved) { try { historyRecords = JSON.parse(saved); } catch(e) {} }
         updateHistoryDisplay();
     }
-    function saveHistory() { localStorage.setItem('cardGameHistory', JSON.stringify(historyRecords)); updateHistoryDisplay(); }
+    function saveHistory() { localStorage.setItem('cardGameHistory_v2', JSON.stringify(historyRecords)); updateHistoryDisplay(); }
     function saveCurrentGameToHistory(result, finalScoreVal) {
         if (currentGameMoves.length === 0) return;
-        historyRecords.unshift({ date: new Date().toLocaleString(), result: result, finalScore: finalScoreVal, moves: [...currentGameMoves] });
+        historyRecords.unshift({ date: new Date().toLocaleString(), result, finalScore: finalScoreVal, moves: [...currentGameMoves] });
         if (historyRecords.length > 20) historyRecords.pop();
         saveHistory();
     }
@@ -387,6 +232,7 @@
     let gameActive = true;
     let isPlayerTurn = true;
     let aiTimer = null;
+    let gameStarted = false;
 
     const totalSpan = document.getElementById('totalValue');
     const cardsLeftSpan = document.getElementById('cardsLeft');
@@ -405,6 +251,8 @@
     const volumeSlider = document.getElementById('volumeSlider');
     const volumeValue = document.getElementById('volumeValue');
     const difficultySelect = document.getElementById('difficultySelect');
+    const firstHandSelect = document.getElementById('firstHandSelect');
+    const nextMusicBtn = document.getElementById('nextMusicBtn');
 
     function getTotalRemaining() { let sum = 0; for (let i = 1; i <= 8; i++) sum += remaining[i]; return sum; }
     function updateUI() {
@@ -421,6 +269,7 @@
     }
     function endGame(winner, loser, lastNum) {
         gameActive = false;
+        gameStarted = false;
         if (aiTimer) clearTimeout(aiTimer);
         let resultText = winner === "player" ? '胜利' : '失败';
         msgDiv.innerHTML = winner === "player" ? `🎉 AI出${lastNum}后总分${currentTotal}超过39！你赢了！` : `💀 你出${lastNum}后总分${currentTotal}超过39，你输了！`;
@@ -430,7 +279,7 @@
         updateUI();
     }
     function playCard(number, isPlayer) {
-        if (!gameActive) return false;
+        if (!gameActive || !gameStarted) return false;
         if (isPlayer && !isPlayerTurn) { msgDiv.innerHTML = "现在是AI回合，请等待~"; return false; }
         if (!isPlayer && isPlayerTurn) return false;
         if (remaining[number] <= 0) { if (isPlayer) msgDiv.innerHTML = `数字${number}已经没有牌了！`; return false; }
@@ -451,22 +300,22 @@
             if (isPlayerTurn) { turnIndicator.innerHTML = "👤 玩家回合"; msgDiv.innerHTML = `✅ ${who}出了${number}，总分${currentTotal}`; }
             else { turnIndicator.innerHTML = "🤖 AI 回合"; msgDiv.innerHTML = `✅ ${who}出了${number}，总分${currentTotal}`;
                 if (aiTimer) clearTimeout(aiTimer);
-                aiTimer = setTimeout(() => { if (gameActive && !isPlayerTurn) aiPlayCard(); }, 500);
+                aiTimer = setTimeout(() => { if (gameActive && !isPlayerTurn && gameStarted) aiPlayCard(); }, 400);
             }
         }
         updateUI();
         return true;
     }
     function aiPlayCard() {
-        if (!gameActive || isPlayerTurn) return;
+        if (!gameActive || isPlayerTurn || !gameStarted) return;
         const remainingCards = [];
         for (let i = 1; i <= 8; i++) if (remaining[i] > 0) remainingCards.push(i);
         if (remainingCards.length === 0) { msgDiv.innerHTML = "牌堆已空！平局！"; gameActive = false; turnIndicator.innerHTML = "🤝 平局"; updateUI(); return; }
-        const bestChoice = getAIPlayCard(remainingCards, currentTotal);
+        const bestChoice = getAIPlayCard(remainingCards, currentTotal, 0, []);
         if (bestChoice !== null) playCard(bestChoice, false);
     }
     function playerPlayCard(number) {
-        if (!gameActive) return;
+        if (!gameActive || !gameStarted) return;
         if (!isPlayerTurn) { msgDiv.innerHTML = "现在是AI回合，请等待~"; return; }
         if (remaining[number] <= 0) { msgDiv.innerHTML = `数字${number}已经没牌了！`; return; }
         playCard(number, true);
@@ -475,13 +324,27 @@
         remaining = {1:4, 2:4, 3:4, 4:4, 5:4, 6:4, 7:4, 8:4};
         currentTotal = 0;
         gameActive = true;
-        isPlayerTurn = true;
+        gameStarted = true;
         if (aiTimer) clearTimeout(aiTimer);
         clearCurrentMoves();
         updateUI();
-        msgDiv.innerHTML = "游戏开始！玩家先出牌";
-        turnIndicator.innerHTML = "👤 玩家回合";
-        lastDrawInfo.innerHTML = "✨ 玩家先出牌 ✨";
+        
+        // 根据先手选择设置回合
+        const firstHand = firstHandSelect.value;
+        isPlayerTurn = (firstHand === 'player');
+        
+        if (isPlayerTurn) {
+            turnIndicator.innerHTML = "👤 玩家回合";
+            msgDiv.innerHTML = "游戏开始！玩家先出牌";
+            lastDrawInfo.innerHTML = "✨ 玩家先出牌 ✨";
+        } else {
+            turnIndicator.innerHTML = "🤖 AI 回合";
+            msgDiv.innerHTML = "游戏开始！AI先出牌";
+            lastDrawInfo.innerHTML = "✨ AI先出牌 ✨";
+            // AI 先手，自动出牌
+            if (aiTimer) clearTimeout(aiTimer);
+            aiTimer = setTimeout(() => { if (gameActive && !isPlayerTurn && gameStarted) aiPlayCard(); }, 500);
+        }
         createCardButtons();
     }
     function createCardButtons() {
@@ -510,9 +373,11 @@
         volumeValue.innerText = vol + '%';
         currentDifficulty = difficultySelect.value;
         settingsModal.style.display = 'none';
-        initGame();
+        if (!gameStarted) initGame();
+        else { gameActive = false; initGame(); }
     });
     volumeSlider.addEventListener('input', (e) => { const val = e.target.value; volumeValue.innerText = val + '%'; setMusicVolume(parseInt(val)); });
+    nextMusicBtn.addEventListener('click', nextMusic);
     
     document.body.addEventListener('click', () => { if (musicEnabled && !musicStarted) playCurrentMusic(); });
     document.body.addEventListener('touchstart', () => { if (musicEnabled && !musicStarted) playCurrentMusic(); });
@@ -521,8 +386,8 @@
     initGame();
     
     const GITHUB_USERNAME = "cookicGJH";
-    const CURRENT_VERSION = "1.2.0";
+    const CURRENT_VERSION = "2.0.0";
     document.getElementById('versionInfo').innerHTML = `当前版本 v${CURRENT_VERSION}`;
 </script>
 </body>
-            </html>
+    </html>
