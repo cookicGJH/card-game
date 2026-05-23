@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>对战选牌 - 超39输</title>
+    <style>
+        * {
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(145deg, #1a472a 0%, #0e2a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 16px;
+        }
+        .game-container {
+            background: rgba(255,248,225,0.95);
+            border-radius: 48px;
+            max-width: 500px;
+            width: 100%;
+            padding: 20px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+        h1 {
+            font-size: 1.5rem;
+            margin: 0 0 5px;
+            color: #ffd966;
+            background: #2c1a0e;
+            display: inline-block;
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .turn-indicator {
+            background: #2d2b26;
+            border-radius: 40px;
+            padding: 8px;
+            margin: 12px 0;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .stats {
+            background: #2d2b26;
+            border-radius: 30px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+        .total {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: #f9f3e0;
+            display: inline-block;
+            padding: 5px 20px;
+            border-radius: 50px;
+            color: #c0392b;
+        }
+        .remain {
+            color: #f3d382;
+            margin-top: 5px;
+            font-size: 0.85rem;
+        }
+        .cards-pool {
+            background: #ecd9b4;
+            border-radius: 30px;
+            padding: 12px;
+            margin: 15px 0;
+        }
+        .pool-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #5a3a1a;
+        }
+        .card-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .card-btn {
+            background: #f5e6c8;
+            border: 2px solid #b97f3a;
+            width: 60px;
+            padding: 8px 0;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #a1582c;
+        }
+        .card-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #a1582c;
+        }
+        .card-btn.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .card-count {
+            font-size: 0.7rem;
+            color: #8b5a2b;
+            display: block;
+        }
+        .last-draw {
+            font-size: 0.85rem;
+            background: #f7e5c2;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 30px;
+            margin-bottom: 10px;
+        }
+        .message {
+            background: #1f2c17;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 30px;
+            color: #ffecb3;
+            font-size: 0.8rem;
+        }
+        .secret-btn {
+            background: #8b691b;
+            border: none;
+            font-size: 1rem;
+            padding: 8px 16px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .reset-btn {
+            background: #517a47;
+            border: none;
+            font-size: 1rem;
+            padding: 8px 16px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .secret-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .secret-content {
+            background: #fef3c7;
+            border-radius: 30px;
+            padding: 20px;
+            max-width: 320px;
+            width: 85%;
+            color: #3b2a1f;
+        }
+        .secret-content h3 {
+            text-align: center;
+            color: #c0392b;
+        }
+        .close-secret {
+            background: #517a47;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            width: 100%;
+            cursor: pointer;
+        }
+        footer {
+            font-size: 0.6rem;
+            margin-top: 12px;
+            opacity: 0.7;
+        }
+        .version-info {
+            font-size: 0.6rem;
+            margin-top: 8px;
+            color: #8b7355;
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <h1>🎴 对战选牌</h1>
+
+    <div class="turn-indicator" id="turnIndicator">👤 玩家回合</div>
+
+    <div class="stats">
+        <div class="total">🎯 总分: <span id="totalValue">0</span></div>
+        <div class="remain">📦 剩余牌数: <strong id="cardsLeft">32</strong></div>
+    </div>
+
+    <div class="cards-pool">
+        <div class="pool-title">🎴 剩余牌数量</div>
+        <div class="card-buttons" id="cardButtons"></div>
+    </div>
+
+    <div class="last-draw" id="lastDrawInfo">✨ 玩家先出牌 ✨</div>
+
+    <button id="resetBtn" class="reset-btn">🔄 重新开局</button>
+    <button id="secretBtn" class="secret-btn">🔍 查看秘诀</button>
+
+    <div class="message" id="msgArea">玩家先选牌，然后AI出牌。谁让总分超过39谁输。</div>
+    <div class="version-info" id="versionInfo">版本加载中...</div>
+    <footer>牌池:1~8各4张 | 玩家先手 | 超过39即败</footer>
+</div>
+
+<div id="secretModal" class="secret-modal">
+    <div class="secret-content">
+        <h3>📖 数学老师秘诀</h3>
+        <p><strong>🎯 核心策略：第一张牌必须选1或2</strong></p>
+        <p>总目标39，第一张选≥3会失去调整空间，AI将获得必胜优势。</p>
+        <p>选1或2后，保持总分不超过32，迫使AI进入必爆陷阱。</p>
+        <p>记住剩余牌数，预判AI的选项。</p>
+        <button class="close-secret" id="closeSecretBtn">关闭</button>
+    </div>
+</div>
+
+<script>
+    // 版本检测配置
+    const GITHUB_USERNAME = "cookicGJH";
+    const CURRENT_VERSION = "1.0.0";
+    const VERSION_CHECK_URL = `https://${GITHUB_USERNAME}.github.io/card-game/version.json`;
+    const APK_DOWNLOAD_URL = `https://${GITHUB_USERNAME}.github.io/card-game/game.apk`;
+
+    document.getElementById('versionInfo').innerHTML = `当前版本 v${CURRENT_VERSION}`;
+
+    async function checkForUpdate() {
+        try {
+            const response = await fetch(VERSION_CHECK_URL + '?t=' + Date.now(), { cache: 'no-cache' });
+            if (!response.ok) return;
+            const data = await response.json();
+            if (data.version && data.version !== CURRENT_VERSION) {
+                if (confirm(`发现新版本 ${data.version}\n\n更新内容：\n${data.updateLog || '修复了一些问题'}\n\n是否下载？`)) {
+                    window.location.href = APK_DOWNLOAD_URL;
+                }
+            }
+        } catch (error) { console.log('版本检测失败', error); }
+    }
+
+    let remaining = {1:4, 2:4, 3:4, 4:4, 5:4, 6:4, 7:4, 8:4};
+    let currentTotal = 0;
+    let gameActive = true;
+    let isPlayerTurn = true;
+    let aiTimer = null;
+
+    const totalSpan = document.getElementById('totalValue');
+    const cardsLeftSpan = document.getElementById('cardsLeft');
+    const resetBtn = document.getElementById('resetBtn');
+    const secretBtn = document.getElementById('secretBtn');
+    const msgDiv = document.getElementById('msgArea');
+    const lastDrawInfo = document.getElementById('lastDrawInfo');
+    const turnIndicator = document.getElementById('turnIndicator');
+    const cardButtonsDiv = document.getElementById('cardButtons');
+    const secretModal = document.getElementById('secretModal');
+    const closeSecretBtn = document.getElementById('closeSecretBtn');
+
+    function getTotalRemaining() {
+        let sum = 0;
+        for (let i = 1; i <= 8; i++) sum += remaining[i];
+        return sum;
+    }
+
+    function updateUI() {
+        cardsLeftSpan.innerText = getTotalRemaining();
+        totalSpan.innerText = currentTotal;
+        for (let i = 1; i <= 8; i++) {
+            const btn = document.getElementById(`card_${i}`);
+            if (btn) {
+                const countSpan = btn.querySelector('.card-count');
+                if (countSpan) countSpan.innerText = `剩${remaining[i]}张`;
+                if (remaining[i] === 0 || !gameActive || !isPlayerTurn) {
+                    btn.classList.add('disabled');
+                } else {
+                    btn.classList.remove('disabled');
+                }
+            }
+        }
+    }
+
+    function endGame(winner, loser, lastNum) {
+        gameActive = false;
+        if (aiTimer) clearTimeout(aiTimer);
+        if (winner === "player") {
+            msgDiv.innerHTML = `🎉 AI出${lastNum}后总分${currentTotal}超过39！你赢了！`;
+            turnIndicator.innerHTML = "🏆 胜利";
+        } else if (winner === "ai") {
+            msgDiv.innerHTML = `💀 你出${lastNum}后总分${currentTotal}超过39，你输了！`;
+            turnIndicator.innerHTML = "💀 失败";
+        }
+        updateUI();
+    }
+
+    function playCard(number, isPlayer) {
+        if (!gameActive) return false;
+        if (isPlayer && !isPlayerTurn) {
+            msgDiv.innerHTML = "现在是AI回合，请等待~";
+            return false;
+        }
+        if (!isPlayer && isPlayerTurn) return false;
+        if (remaining[number] <= 0) {
+            if (isPlayer) msgDiv.innerHTML = `数字${number}已经没有牌了！`;
+            return false;
+        }
+        
+        remaining[number]--;
+        const newTotal = currentTotal + number;
+        const who = isPlayer ? "玩家" : "AI";
+        lastDrawInfo.innerHTML = `📌 ${who} 出了 ${number} (剩余${remaining[number]}张)`;
+        
+        if (newTotal > 39) {
+            currentTotal = newTotal;
+            updateUI();
+            if (isPlayer) endGame("ai", "player", number);
+            else endGame("player", "ai", number);
+            return true;
+        }
+        
+        currentTotal = newTotal;
+        updateUI();
+        isPlayerTurn = !isPlayerTurn;
+        
+        if (gameActive) {
+            if (isPlayerTurn) {
+                turnIndicator.innerHTML = "👤 玩家回合";
+                msgDiv.innerHTML = `✅ ${who}出了${number}，总分${currentTotal}`;
+            } else {
+                turnIndicator.innerHTML = "🤖 AI 回合";
+                msgDiv.innerHTML = `✅ ${who}出了${number}，总分${currentTotal}`;
+                if (aiTimer) clearTimeout(aiTimer);
+                aiTimer = setTimeout(() => {
+                    if (gameActive && !isPlayerTurn) aiPlayCard();
+                }, 500);
+            }
+        }
+        updateUI();
+        return true;
+    }
+    
+    function aiPlayCard() {
+        if (!gameActive || isPlayerTurn) return;
+        const remainingCards = [];
+        for (let i = 1; i <= 8; i++) {
+            if (remaining[i] > 0) remainingCards.push(i);
+        }
+        if (remainingCards.length === 0) {
+            msgDiv.innerHTML = "牌堆已空！平局！";
+            gameActive = false;
+            turnIndicator.innerHTML = "🤝 平局";
+            updateUI();
+            return;
+        }
+        
+        let safeChoices = remainingCards.filter(n => currentTotal + n <= 39);
+        let bestChoice;
+        if (safeChoices.length > 0) {
+            if (currentTotal >= 32) bestChoice = Math.min(...safeChoices);
+            else if (currentTotal >= 25) {
+                let small = safeChoices.filter(n => n <= 4);
+                bestChoice = small.length > 0 ? Math.min(...small) : Math.min(...safeChoices);
+            } else {
+                let big = safeChoices.filter(n => n >= 5);
+                bestChoice = big.length > 0 ? Math.max(...big) : Math.max(...safeChoices);
+            }
+        } else {
+            bestChoice = Math.min(...remainingCards);
+        }
+        playCard(bestChoice, false);
+    }
+    
+    function playerPlayCard(number) {
+        if (!gameActive) return;
+        if (!isPlayerTurn) {
+            msgDiv.innerHTML = "现在是AI回合，请等待~";
+            return;
+        }
+        if (remaining[number] <= 0) {
+            msgDiv.innerHTML = `数字${number}已经没牌了！`;
+            return;
+        }
+        playCard(number, true);
+    }
+    
+    function initGame() {
+        remaining = {1:4, 2:4, 3:4, 4:4, 5:4, 6:4, 7:4, 8:4};
+        currentTotal = 0;
+        gameActive = true;
+        isPlayerTurn = true;
+        if (aiTimer) clearTimeout(aiTimer);
+        updateUI();
+        msgDiv.innerHTML = "游戏开始！玩家先出牌";
+        turnIndicator.innerHTML = "👤 玩家回合";
+        lastDrawInfo.innerHTML = "✨ 玩家先出牌 ✨";
+    }
+    
+    function createCardButtons() {
+        cardButtonsDiv.innerHTML = '';
+        for (let i = 1; i <= 8; i++) {
+            const btn = document.createElement('div');
+            btn.className = 'card-btn';
+            btn.id = `card_${i}`;
+            btn.innerHTML = `<span style="font-size:1.4rem;">${i}</span><span class="card-count">剩${remaining[i]}张</span>`;
+            btn.onclick = (function(num) { return function() { playerPlayCard(num); }; })(i);
+            cardButtonsDiv.appendChild(btn);
+        }
+    }
+    
+    resetBtn.addEventListener('click', () => {
+        if (aiTimer) clearTimeout(aiTimer);
+        initGame();
+        createCardButtons();
+        updateUI();
+    });
+    
+    secretBtn.addEventListener('click', () => {
+        secretModal.style.display = 'flex';
+    });
+    
+    closeSecretBtn.addEventListener('click', () => {
+        secretModal.style.display = 'none';
+    });
+    
+    secretModal.addEventListener('click', (e) => {
+        if (e.target === secretModal) secretModal.style.display = 'none';
+    });
+    
+    createCardButtons();
+    initGame();
+    checkForUpdate();
+</script>
+</body>
+  </html>
