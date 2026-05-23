@@ -27,6 +27,7 @@
             padding: 20px;
             box-shadow: 0 20px 35px rgba(0,0,0,0.4);
             text-align: center;
+            position: relative;
         }
         h1 {
             font-size: 1.5rem;
@@ -37,11 +38,124 @@
             padding: 5px 20px;
             border-radius: 40px;
         }
+        /* 菜单按钮（三横杠） */
+        .menu-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            font-size: 1.5rem;
+            padding: 8px 12px;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+        }
+        .menu-btn:active { transform: scale(0.95); }
+        /* 设置按钮（齿轮） */
+        .settings-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            font-size: 1.3rem;
+            padding: 8px 12px;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+        }
+        .settings-btn:active { transform: scale(0.95); }
+        /* 侧滑菜单 */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -85%;
+            width: 80%;
+            max-width: 320px;
+            height: 100%;
+            background: #2d2b26;
+            z-index: 1001;
+            transition: left 0.3s ease;
+            padding: 20px;
+            color: #ffecb3;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+        }
+        .side-menu.open { left: 0; }
+        .side-menu h3 { color: #ffd966; margin-top: 0; }
+        .side-menu .record-item {
+            background: #3d3a30;
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+        .side-menu .close-menu {
+            background: #8b691b;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            color: white;
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+        /* 设置弹窗 */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1002;
+        }
+        .settings-content {
+            background: #2d2b26;
+            border-radius: 30px;
+            padding: 20px;
+            max-width: 320px;
+            width: 85%;
+            color: #ffecb3;
+        }
+        .settings-content h3 { text-align: center; color: #ffd966; margin-top: 0; }
+        .settings-row {
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .settings-row select, .settings-row input {
+            background: #1f2c17;
+            color: #ffecb3;
+            border: 1px solid #ffd966;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+        .close-settings {
+            background: #517a47;
+            border: none;
+            padding: 10px;
+            border-radius: 40px;
+            color: white;
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+        }
         .turn-indicator {
             background: #2d2b26;
             border-radius: 40px;
             padding: 8px;
-            margin: 12px 0;
+            margin: 50px 0 12px 0;
             font-weight: bold;
             font-size: 1.1rem;
         }
@@ -94,19 +208,9 @@
             cursor: pointer;
             box-shadow: 0 3px 0 #a1582c;
         }
-        .card-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 1px 0 #a1582c;
-        }
-        .card-btn.disabled {
-            opacity: 0.4;
-            pointer-events: none;
-        }
-        .card-count {
-            font-size: 0.7rem;
-            color: #8b5a2b;
-            display: block;
-        }
+        .card-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #a1582c; }
+        .card-btn.disabled { opacity: 0.4; pointer-events: none; }
+        .card-count { font-size: 0.7rem; color: #8b5a2b; display: block; }
         .last-draw {
             font-size: 0.85rem;
             background: #f7e5c2;
@@ -123,58 +227,15 @@
             color: #ffecb3;
             font-size: 0.8rem;
         }
-        .secret-btn {
-            background: #8b691b;
-            border: none;
-            font-size: 1rem;
-            padding: 8px 16px;
-            border-radius: 40px;
-            color: white;
-            cursor: pointer;
-            margin-top: 10px;
-        }
         .reset-btn {
             background: #517a47;
             border: none;
             font-size: 1rem;
-            padding: 8px 16px;
+            padding: 8px 20px;
             border-radius: 40px;
             color: white;
             cursor: pointer;
             margin-top: 10px;
-        }
-        .secret-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .secret-content {
-            background: #fef3c7;
-            border-radius: 30px;
-            padding: 20px;
-            max-width: 320px;
-            width: 85%;
-            color: #3b2a1f;
-        }
-        .secret-content h3 {
-            text-align: center;
-            color: #c0392b;
-        }
-        .close-secret {
-            background: #517a47;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 40px;
-            width: 100%;
-            cursor: pointer;
         }
         footer {
             font-size: 0.6rem;
@@ -186,10 +247,18 @@
             margin-top: 8px;
             color: #8b7355;
         }
+        @media (max-width: 480px) {
+            .card-btn { width: 50px; font-size: 1.1rem; }
+        }
     </style>
 </head>
 <body>
 <div class="game-container">
+    <!-- 菜单按钮（三横杠） -->
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <!-- 设置按钮（齿轮） -->
+    <button class="settings-btn" id="settingsBtn">⚙️</button>
+
     <h1>🎴 对战选牌</h1>
 
     <div class="turn-indicator" id="turnIndicator">👤 玩家回合</div>
@@ -207,46 +276,215 @@
     <div class="last-draw" id="lastDrawInfo">✨ 玩家先出牌 ✨</div>
 
     <button id="resetBtn" class="reset-btn">🔄 重新开局</button>
-    <button id="secretBtn" class="secret-btn">🔍 查看秘诀</button>
 
     <div class="message" id="msgArea">玩家先选牌，然后AI出牌。谁让总分超过39谁输。</div>
     <div class="version-info" id="versionInfo">版本加载中...</div>
     <footer>牌池:1~8各4张 | 玩家先手 | 超过39即败</footer>
 </div>
 
-<div id="secretModal" class="secret-modal">
-    <div class="secret-content">
-        <h3>📖 数学老师秘诀</h3>
-        <p><strong>🎯 核心策略：第一张牌必须选1或2</strong></p>
-        <p>总目标39，第一张选≥3会失去调整空间，AI将获得必胜优势。</p>
-        <p>选1或2后，保持总分不超过32，迫使AI进入必爆陷阱。</p>
-        <p>记住剩余牌数，预判AI的选项。</p>
-        <button class="close-secret" id="closeSecretBtn">关闭</button>
+<!-- 侧滑菜单（记录） -->
+<div id="sideMenu" class="side-menu">
+    <h3>📋 当前游戏记录</h3>
+    <div id="currentRecordList">暂无记录</div>
+    <h3>📜 历史战绩</h3>
+    <div id="historyRecordList">暂无历史</div>
+    <button class="close-menu" id="closeMenuBtn">关闭</button>
+</div>
+
+<!-- 设置弹窗 -->
+<div id="settingsModal" class="settings-modal">
+    <div class="settings-content">
+        <h3>⚙️ 游戏设置</h3>
+        <div class="settings-row">
+            <span>🎵 背景音乐</span>
+            <select id="musicToggleSelect">
+                <option value="on">开启</option>
+                <option value="off">关闭</option>
+            </select>
+        </div>
+        <div class="settings-row">
+            <span>🔊 音量</span>
+            <input type="range" id="volumeSlider" min="0" max="100" value="25">
+            <span id="volumeValue">25%</span>
+        </div>
+        <div class="settings-row">
+            <span>🎮 难度</span>
+            <select id="difficultySelect">
+                <option value="low">低（乱按都能过）</option>
+                <option value="normal">正常（跟现在一样）</option>
+                <option value="high">高（比现在难一点）</option>
+                <option value="extreme">极高（玩家基本不可能赢）</option>
+            </select>
+        </div>
+        <button class="close-settings" id="closeSettingsBtn">保存并关闭</button>
     </div>
 </div>
 
 <script>
-    // 版本检测配置
-    const GITHUB_USERNAME = "cookicGJH";
-    const CURRENT_VERSION = "1.0.0";
-    const VERSION_CHECK_URL = `https://${GITHUB_USERNAME}.github.io/card-game/version.json`;
-    const APK_DOWNLOAD_URL = `https://${GITHUB_USERNAME}.github.io/card-game/game.apk`;
+    // ==================== 音乐系统 ====================
+    const musicList = [
+        'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+        'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+        'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
+    ];
+    let currentMusicIndex = 0;
+    let currentAudio = null;
+    let isMusicPlaying = false;
+    let musicEnabled = true;
 
-    document.getElementById('versionInfo').innerHTML = `当前版本 v${CURRENT_VERSION}`;
-
-    async function checkForUpdate() {
-        try {
-            const response = await fetch(VERSION_CHECK_URL + '?t=' + Date.now(), { cache: 'no-cache' });
-            if (!response.ok) return;
-            const data = await response.json();
-            if (data.version && data.version !== CURRENT_VERSION) {
-                if (confirm(`发现新版本 ${data.version}\n\n更新内容：\n${data.updateLog || '修复了一些问题'}\n\n是否下载？`)) {
-                    window.location.href = APK_DOWNLOAD_URL;
-                }
-            }
-        } catch (error) { console.log('版本检测失败', error); }
+    function playCurrentMusic() {
+        if (!musicEnabled) return;
+        if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+        currentAudio = new Audio(musicList[currentMusicIndex]);
+        currentAudio.loop = true;
+        const volume = document.getElementById('volumeSlider').value / 100;
+        currentAudio.volume = volume;
+        currentAudio.play().catch(e => console.log('音乐播放失败:', e));
+        isMusicPlaying = true;
+    }
+    function stopMusic() {
+        if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+        isMusicPlaying = false;
+    }
+    function setMusicVolume(vol) {
+        if (currentAudio) currentAudio.volume = vol / 100;
     }
 
+    // ==================== 难度设置 ====================
+    let currentDifficulty = 'normal'; // low, normal, high, extreme
+    
+    // AI决策（根据难度）
+    function getAIPlayCard(remainingCards, currentTotalVal) {
+        if (remainingCards.length === 0) return null;
+        
+        // 低难度：随机选牌（乱按都能过）
+        if (currentDifficulty === 'low') {
+            const randomIndex = Math.floor(Math.random() * remainingCards.length);
+            return remainingCards[randomIndex];
+        }
+        
+        // 正常难度：原策略
+        if (currentDifficulty === 'normal') {
+            let safeChoices = remainingCards.filter(n => currentTotalVal + n <= 39);
+            if (safeChoices.length > 0) {
+                if (currentTotalVal >= 32) return Math.min(...safeChoices);
+                else if (currentTotalVal >= 25) {
+                    let small = safeChoices.filter(n => n <= 4);
+                    return small.length > 0 ? Math.min(...small) : Math.min(...safeChoices);
+                } else {
+                    let big = safeChoices.filter(n => n >= 5);
+                    return big.length > 0 ? Math.max(...big) : Math.max(...safeChoices);
+                }
+            }
+            return Math.min(...remainingCards);
+        }
+        
+        // 高难度：更激进，优先选大牌逼玩家
+        if (currentDifficulty === 'high') {
+            let safeChoices = remainingCards.filter(n => currentTotalVal + n <= 39);
+            if (safeChoices.length > 0) {
+                // 选最大的安全牌
+                return Math.max(...safeChoices);
+            }
+            return Math.min(...remainingCards);
+        }
+        
+        // 极高难度：最优策略，尽量让玩家无路可走
+        if (currentDifficulty === 'extreme') {
+            let safeChoices = remainingCards.filter(n => currentTotalVal + n <= 39);
+            if (safeChoices.length > 0) {
+                // 选能让自己接近39但不爆的牌，同时尽量消耗关键数字
+                let bigSafe = safeChoices.filter(n => n >= 6);
+                if (bigSafe.length > 0) return Math.max(...bigSafe);
+                return Math.max(...safeChoices);
+            }
+            return Math.min(...remainingCards);
+        }
+        
+        return remainingCards[0];
+    }
+
+    // ==================== 记录系统 ====================
+    let currentGameMoves = []; // 当前游戏选的牌 [{number, by, time}]
+    let historyRecords = [];    // 历史战绩 [{result, moves, date, finalScore}]
+    
+    // 加载历史记录（localStorage）
+    function loadHistory() {
+        const saved = localStorage.getItem('cardGameHistory');
+        if (saved) {
+            try {
+                historyRecords = JSON.parse(saved);
+            } catch(e) { historyRecords = []; }
+        }
+        updateHistoryDisplay();
+    }
+    
+    // 保存历史记录
+    function saveHistory() {
+        localStorage.setItem('cardGameHistory', JSON.stringify(historyRecords));
+        updateHistoryDisplay();
+    }
+    
+    // 添加当前游戏到历史
+    function saveCurrentGameToHistory(result, finalScoreVal) {
+        if (currentGameMoves.length === 0) return;
+        const record = {
+            date: new Date().toLocaleString(),
+            result: result,
+            finalScore: finalScoreVal,
+            moves: [...currentGameMoves]
+        };
+        historyRecords.unshift(record); // 最新在上
+        if (historyRecords.length > 20) historyRecords.pop(); // 只保留最近20条
+        saveHistory();
+    }
+    
+    // 更新历史显示
+    function updateHistoryDisplay() {
+        const historyDiv = document.getElementById('historyRecordList');
+        if (!historyDiv) return;
+        if (historyRecords.length === 0) {
+            historyDiv.innerHTML = '暂无历史';
+            return;
+        }
+        historyDiv.innerHTML = historyRecords.map(rec => `
+            <div class="record-item">
+                <strong>${rec.result}</strong> | 总分:${rec.finalScore} | ${rec.date}<br>
+                牌序: ${rec.moves.map(m => `${m.by}${m.number}`).join('→')}
+            </div>
+        `).join('');
+    }
+    
+    // 更新当前游戏记录显示
+    function updateCurrentRecordDisplay() {
+        const recordDiv = document.getElementById('currentRecordList');
+        if (!recordDiv) return;
+        if (currentGameMoves.length === 0) {
+            recordDiv.innerHTML = '暂无记录';
+            return;
+        }
+        recordDiv.innerHTML = currentGameMoves.map(m => 
+            `<div class="record-item">${m.by} 出了 ${m.number}</div>`
+        ).join('');
+    }
+    
+    // 记录一步
+    function addMove(number, by) {
+        currentGameMoves.push({
+            number: number,
+            by: by,
+            time: new Date().toLocaleTimeString()
+        });
+        updateCurrentRecordDisplay();
+    }
+    
+    // 清空当前记录
+    function clearCurrentMoves() {
+        currentGameMoves = [];
+        updateCurrentRecordDisplay();
+    }
+
+    // ==================== 游戏逻辑 ====================
     let remaining = {1:4, 2:4, 3:4, 4:4, 5:4, 6:4, 7:4, 8:4};
     let currentTotal = 0;
     let gameActive = true;
@@ -256,13 +494,20 @@
     const totalSpan = document.getElementById('totalValue');
     const cardsLeftSpan = document.getElementById('cardsLeft');
     const resetBtn = document.getElementById('resetBtn');
-    const secretBtn = document.getElementById('secretBtn');
     const msgDiv = document.getElementById('msgArea');
     const lastDrawInfo = document.getElementById('lastDrawInfo');
     const turnIndicator = document.getElementById('turnIndicator');
     const cardButtonsDiv = document.getElementById('cardButtons');
-    const secretModal = document.getElementById('secretModal');
-    const closeSecretBtn = document.getElementById('closeSecretBtn');
+    const menuBtn = document.getElementById('menuBtn');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const sideMenu = document.getElementById('sideMenu');
+    const settingsModal = document.getElementById('settingsModal');
+    const closeMenuBtn = document.getElementById('closeMenuBtn');
+    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+    const musicToggleSelect = document.getElementById('musicToggleSelect');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeValue = document.getElementById('volumeValue');
+    const difficultySelect = document.getElementById('difficultySelect');
 
     function getTotalRemaining() {
         let sum = 0;
@@ -290,13 +535,18 @@
     function endGame(winner, loser, lastNum) {
         gameActive = false;
         if (aiTimer) clearTimeout(aiTimer);
+        let resultText = '';
         if (winner === "player") {
+            resultText = '胜利';
             msgDiv.innerHTML = `🎉 AI出${lastNum}后总分${currentTotal}超过39！你赢了！`;
             turnIndicator.innerHTML = "🏆 胜利";
         } else if (winner === "ai") {
+            resultText = '失败';
             msgDiv.innerHTML = `💀 你出${lastNum}后总分${currentTotal}超过39，你输了！`;
             turnIndicator.innerHTML = "💀 失败";
         }
+        saveCurrentGameToHistory(resultText, currentTotal);
+        clearCurrentMoves();
         updateUI();
     }
 
@@ -316,6 +566,7 @@
         const newTotal = currentTotal + number;
         const who = isPlayer ? "玩家" : "AI";
         lastDrawInfo.innerHTML = `📌 ${who} 出了 ${number} (剩余${remaining[number]}张)`;
+        addMove(number, who);
         
         if (newTotal > 39) {
             currentTotal = newTotal;
@@ -360,21 +611,8 @@
             return;
         }
         
-        let safeChoices = remainingCards.filter(n => currentTotal + n <= 39);
-        let bestChoice;
-        if (safeChoices.length > 0) {
-            if (currentTotal >= 32) bestChoice = Math.min(...safeChoices);
-            else if (currentTotal >= 25) {
-                let small = safeChoices.filter(n => n <= 4);
-                bestChoice = small.length > 0 ? Math.min(...small) : Math.min(...safeChoices);
-            } else {
-                let big = safeChoices.filter(n => n >= 5);
-                bestChoice = big.length > 0 ? Math.max(...big) : Math.max(...safeChoices);
-            }
-        } else {
-            bestChoice = Math.min(...remainingCards);
-        }
-        playCard(bestChoice, false);
+        const bestChoice = getAIPlayCard(remainingCards, currentTotal);
+        if (bestChoice !== null) playCard(bestChoice, false);
     }
     
     function playerPlayCard(number) {
@@ -396,10 +634,12 @@
         gameActive = true;
         isPlayerTurn = true;
         if (aiTimer) clearTimeout(aiTimer);
+        clearCurrentMoves();
         updateUI();
         msgDiv.innerHTML = "游戏开始！玩家先出牌";
         turnIndicator.innerHTML = "👤 玩家回合";
         lastDrawInfo.innerHTML = "✨ 玩家先出牌 ✨";
+        createCardButtons();
     }
     
     function createCardButtons() {
@@ -412,30 +652,62 @@
             btn.onclick = (function(num) { return function() { playerPlayCard(num); }; })(i);
             cardButtonsDiv.appendChild(btn);
         }
+        updateUI();
     }
     
     resetBtn.addEventListener('click', () => {
         if (aiTimer) clearTimeout(aiTimer);
         initGame();
-        createCardButtons();
-        updateUI();
     });
     
-    secretBtn.addEventListener('click', () => {
-        secretModal.style.display = 'flex';
+    // 菜单控制
+    menuBtn.addEventListener('click', () => sideMenu.classList.add('open'));
+    closeMenuBtn.addEventListener('click', () => sideMenu.classList.remove('open'));
+    sideMenu.addEventListener('click', (e) => { if (e.target === sideMenu) sideMenu.classList.remove('open'); });
+    
+    // 设置控制
+    settingsBtn.addEventListener('click', () => settingsModal.style.display = 'flex');
+    closeSettingsBtn.addEventListener('click', () => {
+        // 保存设置
+        musicEnabled = musicToggleSelect.value === 'on';
+        if (musicEnabled) playCurrentMusic();
+        else stopMusic();
+        
+        const vol = parseInt(volumeSlider.value);
+        setMusicVolume(vol);
+        volumeValue.innerText = vol + '%';
+        
+        currentDifficulty = difficultySelect.value;
+        
+        settingsModal.style.display = 'none';
     });
     
-    closeSecretBtn.addEventListener('click', () => {
-        secretModal.style.display = 'none';
+    // 音量滑块实时
+    volumeSlider.addEventListener('input', (e) => {
+        const val = e.target.value;
+        volumeValue.innerText = val + '%';
+        setMusicVolume(parseInt(val));
     });
     
-    secretModal.addEventListener('click', (e) => {
-        if (e.target === secretModal) secretModal.style.display = 'none';
-    });
+    // 自动开始音乐（首次交互）
+    let musicStarted = false;
+    function startMusicOnInteraction() {
+        if (!musicStarted && musicEnabled) {
+            playCurrentMusic();
+            musicStarted = true;
+        }
+    }
+    document.body.addEventListener('click', startMusicOnInteraction);
+    document.body.addEventListener('touchstart', startMusicOnInteraction);
     
-    createCardButtons();
+    // 加载历史
+    loadHistory();
     initGame();
-    checkForUpdate();
+    
+    // 版本检测
+    const GITHUB_USERNAME = "cookicGJH";
+    const CURRENT_VERSION = "1.1.0";
+    document.getElementById('versionInfo').innerHTML = `当前版本 v${CURRENT_VERSION}`;
 </script>
 </body>
-  </html>
+    </html>
